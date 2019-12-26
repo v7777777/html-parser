@@ -1,3 +1,5 @@
+package parser;
+
 import org.jsoup.select.Elements;
 
 import java.io.File;
