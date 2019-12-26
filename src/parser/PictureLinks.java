@@ -14,9 +14,19 @@ import java.util.stream.Collectors;
 
 public class PictureLinks {
 
-    public static List <String> getTextLinks (Elements links) {
+    public PictureLinks (Elements links, Elements notValidLinks )
+
+    {
+        this.links=links;
+        this.notValidLinks = notValidLinks;
+    }
+
+    Elements links ;
+    Elements notValidLinks;
+
+    public List <String> getTextLinks () {
     List <String> textLinks = links.stream().
-            filter(p -> !(p.parent().tagName().equals("noscript") || p.parent().parent().tagName().equals("noscript") )).
+            filter(p -> !(notValidLinks.contains(p))).
             map(e -> e.attributes().get("src")).
             collect(Collectors.toList());
              return textLinks;
