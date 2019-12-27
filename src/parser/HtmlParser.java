@@ -6,7 +6,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
-public class HTML_Parser {
+public class HtmlParser {
 
    public static PictureLinks parse (String url) throws IOException {
 
