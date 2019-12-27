@@ -7,8 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +26,7 @@ public class PictureLinks {
     Elements links ;
     Elements notValidLinks;
 
+
     public List <String> getTextLinks () {
     List <String> textLinks = links.stream().
             filter(p -> !(notValidLinks.contains(p))).
@@ -32,29 +35,36 @@ public class PictureLinks {
              return textLinks;
 }
 
-    public static void downloadPics(List <String> textLinks, String downloadPath) throws IOException {
+    public static DownloadResult downloadPics(List <String> textLinks, String downloadPath)  {
+
+        ArrayList <String> downloadErrors = new ArrayList <>();
+        ArrayList <String> downloadedLinks = new ArrayList <>();
 
         String downloadFolder= downloadPath;
+
         if (!Files.exists(Paths.get(downloadFolder))) {Paths.get(downloadFolder).toFile().mkdir();}
-
-
 
         for (int i = 0; i < textLinks.size(); i++) {
 
-            URL url = new URL(textLinks.get(i));
+         try {   URL url = new URL(textLinks.get(i));
             InputStream inputStream = url.openStream();
-            Files.copy(inputStream, Paths.get(downloadFolder + File.separator + textLinks.get(i).substring(textLinks.get(i).lastIndexOf("/") + 1)), StandardCopyOption.REPLACE_EXISTING);
+            Path destPath = Paths.get(downloadFolder + File.separator + textLinks.get(i).substring(textLinks.get(i).lastIndexOf("/") + 1));
+            Files.copy(inputStream, destPath, StandardCopyOption.REPLACE_EXISTING);
+            downloadedLinks.add(destPath.toString());
+         }
+         catch (Exception e ) {
+             e.printStackTrace();
+             String error = e.getMessage();
+             downloadErrors.add(error);
+             continue;
+         }
         }
+
+        DownloadResult downloadResult = new DownloadResult(downloadErrors, downloadedLinks);
+
+        return downloadResult;
     }
 
-    public static void printLinks (List <String> textLinks) {
 
-        textLinks.forEach(System.out::println);
-    }
-
-    public static void getLinksNumber (List <String> textLinks) {
-
-        System.out.println(textLinks.size());
-    }
 
 }

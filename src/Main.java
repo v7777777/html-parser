@@ -1,6 +1,7 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import parser.DownloadResult;
 import parser.HTML_Parser;
 import parser.PictureLinks;
 
@@ -23,9 +24,10 @@ public class Main {
             String page = "https://lenta.ru/";
             String downloadFolder = "C:\\Users\\v.lesina\\Downloads\\pics";
             List<String> picsLinks = HTML_Parser.parse(page).getTextLinks();
-            PictureLinks.downloadPics(picsLinks, downloadFolder);
-            PictureLinks.printLinks(picsLinks);
-            PictureLinks.getLinksNumber(picsLinks);
+            DownloadResult downloadResult =  PictureLinks.downloadPics(picsLinks, downloadFolder);
+            downloadResult.printDownloadedLinks();
+            downloadResult.countDownloadErrors();
+            downloadResult.countDownloadedLinks();
 
 
 
